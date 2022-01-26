@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Posts[] //one to many
+  profile   Profile? // one to one
+
+
+}
+
+model Posts {
+  id        Int      @id @default(autoincrement())
+  about     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+}
+
+model Profile {
+  id             Int          @id @default(autoincrement())
+  address        String
+  Dob            DateTime
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int          @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId Int
+  courses        Courses[]
+
+}
+
+model Material {
+  id             Int          @id @default(autoincrement())
+  tittle         String
+  description    String?
+  content        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  question       Question[]
+  courses        Courses[] //many to many
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId Int
+
+
+}
+
+model Question {
+  id           Int      @id @default(autoincrement())
+  questionText String
+  type         String
+  answerText   String
+  material     Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  materialId   Int
+  choice       Choice[]
+}
+
+model Choice {
+  id           Int      @id @default(autoincrement())
+  choiceText   String
+  choiceAnswer Boolean
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId   Int
+}
+
+model Organization {
+  id        Int        @id @default(autoincrement())
+  Name      String
+  Type      String
+  Address   String
+  Phone     Int
+  email     String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  profile   Profile[]
+  Courses   Courses[]
+  material  Material[]
+}
+
+model Courses {
+  id               Int          @id @default(autoincrement())
+  Name             String
+  material         Material[] //many to many
+  requiredCredits  Int
+  enrolledStudents Profile[]
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId   Int
+}
