@@ -12,6 +12,9 @@ export class MaterialService {
         tittle: createMaterialDto.tittle,
         description: createMaterialDto.description,
         content: createMaterialDto.content,
+        organization: {
+          connect: { id: createMaterialDto.organizationId },
+        },
       },
     });
   }
@@ -22,12 +25,16 @@ export class MaterialService {
         question: {
           include: { choice: true },
         },
+        organization: true,
       },
     });
   }
 
   async findById(id: number) {
-    return await this.prisma.material.findUnique({ where: { id } });
+    return await this.prisma.material.findUnique({
+      where: { id },
+      include: { question: { include: { choice: true } }, organization: true },
+    });
   }
 
   async update(id: number, updateMaterialDto: UpdateMaterialDto) {

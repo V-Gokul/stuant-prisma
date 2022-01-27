@@ -14,7 +14,7 @@ export class UsersService {
 
   async findAll() {
     const user = await this.prisma.user.findMany({
-      include: { posts: true, profile: true },
+      include: { profile: true },
     });
     return _.omit(user, 'password');
   }

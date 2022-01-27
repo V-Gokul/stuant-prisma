@@ -17,19 +17,9 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  posts     Posts[] //one to many
   profile   Profile? // one to one
 
 
-}
-
-model Posts {
-  id        Int      @id @default(autoincrement())
-  about     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int
 }
 
 model Profile {
@@ -62,13 +52,16 @@ model Material {
 }
 
 model Question {
-  id           Int      @id @default(autoincrement())
-  questionText String
-  type         String
-  answerText   String
-  material     Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  materialId   Int
-  choice       Choice[]
+  id             Int          @id @default(autoincrement())
+  questionText   String
+  type           String
+  answerText     String
+  material       Material     @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  materialId     Int
+  choice         Choice[]
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId Int
+
 }
 
 model Choice {
@@ -88,9 +81,10 @@ model Organization {
   email     String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  profile   Profile[]
+  profile   Profile[] //ONE TO MANY
   Courses   Courses[]
   material  Material[]
+  Question  Question[]
 }
 
 model Courses {

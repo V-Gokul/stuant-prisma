@@ -22,6 +22,7 @@ export class QuestionService {
           createMany: { data: createQuestionDto.choice },
         },
         material: { connect: { id: createQuestionDto.materialId } },
+        organization: { connect: { id: createQuestionDto.organizationId } },
       },
     });
     return newQuestion;
@@ -29,21 +30,14 @@ export class QuestionService {
 
   async findAll() {
     return await this.prisma.question.findMany({
-      include: { choice: true },
+      include: { choice: true, organization: true },
     });
   }
 
   async findById(id: number) {
     return await this.prisma.question.findUnique({
       where: { id },
-      select: {
-        id: true,
-        questionText: true,
-        type: true,
-        answerText: true,
-        materialId: true,
-        choice: true,
-      },
+      include: { choice: true, organization: true },
     });
   }
 

@@ -15,6 +15,9 @@ export class CreateQuestionDto {
 
   @IsNotEmpty()
   choice: CreateChoiceDto[];
+
+  @IsNotEmpty()
+  organizationId: number;
 }
 
 export class CreateChoiceDto {
